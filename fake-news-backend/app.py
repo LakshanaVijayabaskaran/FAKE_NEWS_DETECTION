@@ -88,7 +88,7 @@ def predict():
 if __name__ == '__main__':
     # Retrain every 30 seconds (use hours=6 in production)
     scheduler = BackgroundScheduler()
-    scheduler.add_job(func=retrain_model, trigger="interval", hours=1)
+    scheduler.add_job(func=retrain_model, trigger="interval", hours=6)
     scheduler.start()
 
     print("API is running with periodic model updates.")
