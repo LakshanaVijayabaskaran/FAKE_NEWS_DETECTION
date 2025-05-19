@@ -1,6 +1,6 @@
 import tensorflow as tf
 tf.config.run_functions_eagerly(True)
-
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import pickle
@@ -86,13 +86,20 @@ def predict():
 
 
 if __name__ == '__main__':
-    # Retrain every 30 seconds (use hours=6 in production)
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(func=retrain_model, trigger="interval", hours=6)
-    scheduler.start()
+    # Get port for Render, fallback to 5000 locally
+    port = int(os.environ.get("PORT", 5000))
+    
+    # Only enable periodic retraining in local development
+    #if os.environ.get("RENDER") is None:
+        # This means you're running locally, not on Render
+        #scheduler = BackgroundScheduler()
+        #scheduler.add_job(func=retrain_model, trigger="interval", hours=6)
+        #scheduler.start()
+        #print("Scheduler started for periodic model updates.")
 
-    print("API is running with periodic model updates.")
+    print("API is running.")
     try:
-        app.run(debug=True)
+        app.run(host='0.0.0.0', port=port, debug=True)
     except (KeyboardInterrupt, SystemExit):
-        scheduler.shutdown()
+        if os.environ.get("RENDER") is None:
+            scheduler.shutdown()
