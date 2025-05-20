@@ -9,18 +9,28 @@ function App() {
   const [result, setResult] = useState(null);
   const [confidence, setConfidence] = useState(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
     const res = await fetch('https://fake-news-detection-5-myxi.onrender.com/predict', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text }),
     });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
+    }
+
     const data = await res.json();
     const prediction = data.prediction;
     setResult(prediction > 0.5 ? 'Fake News' : 'Real News');
     setConfidence(prediction);
-  };
+  } catch (err) {
+    console.error("❌ Error during prediction fetch:", err);
+    alert("Failed to get prediction. Check console for details.");
+  }
+};
 
   const chartData =
     confidence !== null
