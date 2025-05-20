@@ -11,7 +11,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import requests
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["https://682c923d76982e82ce738f3a--fakenewsdetectionnm.netlify.app/"])
 
 # Constants
 MODEL_PATH = 'lstm_model.h5'
